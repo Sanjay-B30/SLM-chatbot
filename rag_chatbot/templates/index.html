@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="InsightBot — Secure On-Premise AI Business Analytics Chatbot" />
+  <title>InsightBot — AI Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════ LOGIN SCREEN ══════════════════════ -->
+<div id="loginScreen" class="screen active">
+  <div class="login-particles">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+  </div>
+
+  <div class="login-split">
+    <!-- Left branding panel -->
+    <div class="login-brand-panel">
+      <div class="brand-content">
+        <div class="brand-logo-wrap">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+            <rect width="48" height="48" rx="14" fill="url(#lg1)"/>
+            <path d="M14 34L24 14L34 34" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 28H31" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="24" cy="24" r="3.5" fill="white" fill-opacity="0.25"/>
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="48" y2="48">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div>
+            <h1 class="brand-name">InsightBot</h1>
+            <p class="brand-tag">AI Business Intelligence</p>
+          </div>
+        </div>
+        <h2 class="brand-headline">Turn data into<br/><span class="gradient-text">decisions instantly.</span></h2>
+        <p class="brand-desc">Ask questions in plain English. Get SQL-powered answers with full audit trails — 100% on-premise.</p>
+        <div class="brand-features">
+          <div class="feat-item"><span class="feat-dot"></span>Role-based data access</div>
+          <div class="feat-item"><span class="feat-dot"></span>Natural language to SQL</div>
+          <div class="feat-item"><span class="feat-dot"></span>Complete audit logging</div>
+          <div class="feat-item"><span class="feat-dot"></span>Zero cloud dependency</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="login-form-panel">
+      <div class="login-card glass-card">
+        <div class="login-card-header">
+          <h2 class="login-heading">Welcome back</h2>
+          <p class="login-sub">Sign in to your analytics workspace</p>
+        </div>
+
+        <div id="loginError" class="error-banner hidden"></div>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="field-group">
+            <label class="field-label" for="usernameInput">Username</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+              </svg>
+              <input id="usernameInput" type="text" class="field-input" placeholder="Enter your username" required autofocus />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="passwordInput">Password</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+              </svg>
+              <input id="passwordInput" type="password" class="field-input" placeholder="Enter your password" required />
+              <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePassword()" title="Show password">
+                <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button id="loginBtn" type="submit" class="btn-primary">
+            <span id="loginBtnText">Sign In</span>
+            <span id="loginSpinner" class="btn-spinner hidden"></span>
+          </button>
+        </form>
+
+        <div class="divider"><span>demo accounts</span></div>
+
+        <div class="demo-grid">
+          <button class="demo-chip" onclick="fillDemo('admin','Admin@123')">
+            <span class="chip-role-dot" style="background:#f59e0b"></span>admin
+          </button>
+          <button class="demo-chip" onclick="fillDemo('sales_south','Sales@123')">
+            <span class="chip-role-dot" style="background:#22c55e"></span>sales
+          </button>
+          <button class="demo-chip" onclick="fillDemo('inventory','Inv@123')">
+            <span class="chip-role-dot" style="background:#06b6d4"></span>inventory
+          </button>
+          <button class="demo-chip" onclick="fillDemo('finance','Fin@123')">
+            <span class="chip-role-dot" style="background:#a78bfa"></span>finance
+          </button>
+          <button class="demo-chip" onclick="fillDemo('hr','HR@123')">
+            <span class="chip-role-dot" style="background:#f472b6"></span>hr
+          </button>
+          <button class="demo-chip" onclick="fillDemo('manager','Mgr@123')">
+            <span class="chip-role-dot" style="background:#6366f1"></span>manager
+          </button>
+        </div>
+
+        <p class="secure-note">
+          <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12"><path fill-rule="evenodd" d="M8 1a5 5 0 00-5 5v1H2a1 1 0 00-1 1v6a1 1 0 001 1h12a1 1 0 001-1V8a1 1 0 00-1-1h-1V6a5 5 0 00-5-5zm3 6V6a3 3 0 10-6 0v1h6z" clip-rule="evenodd"/></svg>
+          100% On-Premise · No Cloud · No Data Leaves Your Network
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CHAT SCREEN ═══════════════════════ -->
+<div id="chatScreen" class="screen">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 40 40" fill="none" width="30" height="30">
+          <rect width="40" height="40" rx="10" fill="url(#slg)"/>
+          <path d="M11 29L20 11L29 29" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.5 24H26.5" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="slg" x1="0" y1="0" x2="40" y2="40">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="sidebar-brand">InsightBot</span>
+      </div>
+
+      <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4H6a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-6M18 2l-6 6M15 2h3v3"/>
+        </svg>
+        New Chat
+      </button>
+    </div>
+
+    <div class="user-card">
+      <div class="user-avatar" id="userAvatarSidebar">A</div>
+      <div class="user-info">
+        <div class="user-name" id="userNameSidebar">User</div>
+        <div class="user-role-badge" id="userRoleBadge">role</div>
+      </div>
+      <div class="status-indicator" id="statusIndicator" title="System status"></div>
+    </div>
+
+    <!-- Chat Sessions History -->
+    <div class="sidebar-section">
+      <p class="sidebar-section-title">Chat History</p>
+      <div id="chatSessionsList" class="sessions-list">
+        <p class="no-history-msg">No previous chats yet</p>
+      </div>
+    </div>
+
+    <!-- Quick Questions -->
+    <div class="sidebar-section">
+      <p class="sidebar-section-title">Quick Questions</p>
+      <div id="quickQuestions" class="quick-list"></div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div id="auditSection" class="audit-row" style="display:none">
+        <button class="sidebar-action-btn" onclick="loadAudit()">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+          </svg>
+          Audit Log
+        </button>
+      </div>
+
+      <div class="status-row">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText" class="status-text">Checking...</span>
+      </div>
+
+      <button class="logout-btn" onclick="logout()">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+          <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main Chat Area ── -->
+  <main class="chat-main">
+    <header class="chat-header">
+      <div class="chat-header-left">
+        <div class="header-title-wrap">
+          <h2 class="chat-title" id="chatSessionTitle">Analytics Chat</h2>
+          <span class="chat-subtitle">Ask anything about your business data</span>
+        </div>
+      </div>
+      <div class="chat-header-right">
+        <div class="model-pill">
+          <span class="model-pulse"></span>
+          <span id="modelLabel">Gemma 2B · On-Premise</span>
+        </div>
+        <button class="icon-btn" onclick="clearCurrentChat()" title="Clear current chat">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="chatMessages" class="chat-messages">
+      <!-- Welcome message injected by JS -->
+    </div>
+
+    <div class="chat-input-area">
+      <div class="input-row">
+        <div class="textarea-wrap">
+          <textarea
+            id="chatInput"
+            class="chat-textarea"
+            placeholder="Ask about your sales, inventory, finance, or HR data…"
+            rows="1"
+          ></textarea>
+        </div>
+        <button id="sendBtn" class="send-btn" onclick="sendMessage()" title="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <p class="input-hint">
+        <kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Shift+Enter</kbd> for new line
+      </p>
+    </div>
+  </main>
+
+</div>
+
+<script src="/static/chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+Database: chatbot_db (MySQL)
+
+=== ROLE ACCESS MATRIX ===
+admin      -> ALL tables and views
+sales      -> SalesOrders, SalesOrderItems, SalesReturns, Customers, Products, v_SalesOrders
+inventory  -> Inventory, Products, Categories, Warehouses, StockMovements, v_InventoryStatus
+finance    -> FinancialTransactions, Accounts, Payroll, Expenses, v_FinancialSummary
+hr         -> Employees, Departments, Shifts, LeaveTypes, LeaveEligibility, LeaveTransactions, Attendance, Payroll
+management -> v_SalesOrders, v_InventoryStatus, v_FinancialSummary, v_ManagementKPI, SalesOrders, Employees, Departments
+
+=== TABLE DEFINITIONS ===
+
+-- Departments
+Table: Departments
+Columns: DeptID (PK), DeptName (varchar), DeptCode (varchar), Location (varchar), Budget (decimal), Status (char A=Active)
+Sample depts: Sales & Marketing (SALES), Inventory & Stores (INV), Finance & Accounts (FIN), Human Resources (HR), IT, Operations (OPS), Procurement (PROC), Management (MGMT)
+
+-- Employees
+Table: Employees
+Columns: EmployeeID (PK), EmpCode, EmpName, Gender (Male/Female/Other), DateOfBirth, JoinDate, DeptID (FK), ShiftID (FK), Designation, QualificationID (FK), BasicSalary, MobileNo, Branch (Chennai/Mumbai), Status (A=Active, I=Inactive, R=Resigned)
+
+-- Shifts
+Table: Shifts
+Columns: ShiftID (PK), ShiftName, ShiftCode (GS=General, MS=Morning, NS=Night, AS=Afternoon), StartTime, EndTime
+
+-- LeaveTypes
+Table: LeaveTypes
+Columns: LeaveTypeID (PK), LeaveTypeName, TypeCode (CL=Casual, SL=Sick, EL=Earned, ML=Maternity, CO=CompOff), MaxDaysPerYear
+
+-- LeaveEligibility
+Table: LeaveEligibility
+Columns: EligID (PK), EmployeeID (FK), LeaveTypeID (FK), Year, EligibleDays, AvailedDays, BalanceDays
+
+-- LeaveTransactions
+Table: LeaveTransactions
+Columns: LeaveID (PK), EmployeeID (FK), LeaveTypeID (FK), FromDate, ToDate, LeaveDays, Reason, Status (Pending/Approved/Rejected), ApprovedBy, ApplicationDate
+
+-- Attendance
+Table: Attendance
+Columns: AttendanceID (PK), EmployeeID (FK), AttDate, InTime, OutTime, WorkHours, Status (Present/Absent/Leave/Holiday/HalfDay)
+
+-- Products
+Table: Products
+Columns: ProductID (PK), ProductCode, ProductName, CategoryID (FK), UnitOfMeasure, CostPrice, SellingPrice, ReorderLevel, Status
+
+-- Categories
+Table: Categories
+Columns: CategoryID (PK), CategoryName, CategoryCode (ELEC, RAW, FG, PKG, OFF, SPA, SAF), Description
+
+-- Warehouses
+Table: Warehouses
+Columns: WarehouseID (PK), WarehouseName, Location, ManagerID (FK Employees), Capacity
+
+-- Inventory
+Table: Inventory
+Columns: InventoryID (PK), ProductID (FK), WarehouseID (FK), QuantityOnHand (int), QuantityReserved (int), AvailableQty = QuantityOnHand - QuantityReserved, LastUpdated
+
+-- StockMovements
+Table: StockMovements
+Columns: MovementID (PK), ProductID (FK), WarehouseID (FK), MovementType (IN/OUT/TRANSFER/ADJUSTMENT), Quantity, ReferenceNo, Remarks, MovementDate
+
+-- Customers
+Table: Customers
+Columns: CustomerID (PK), CustomerCode, CustomerName, Region (South/West/North/East), City, ContactPerson, Phone, Email, CreditLimit, Status
+
+-- SalesOrders
+Table: SalesOrders
+Columns: OrderID (PK), OrderNo, OrderDate, CustomerID (FK), SalesPersonID (FK Employees), Region (South/West/North/East), Status (Draft/Confirmed/Shipped/Delivered/Cancelled), TotalAmount, DiscountAmount, TaxAmount, NetAmount, DeliveryDate
+
+-- SalesOrderItems
+Table: SalesOrderItems
+Columns: ItemID (PK), OrderID (FK), ProductID (FK), Quantity, UnitPrice, Discount, LineTotal
+
+-- SalesReturns
+Table: SalesReturns
+Columns: ReturnID (PK), ReturnNo, ReturnDate, OrderID (FK), Reason, ReturnAmount, Status (Pending/Approved/Processed)
+
+-- Accounts
+Table: Accounts
+Columns: AccountID (PK), AccountCode, AccountName, AccountType (Asset/Liability/Equity/Revenue/Expense)
+Key accounts: 4000=Sales Revenue, 5100=Salaries & Wages, 5200=Rent & Utilities, 1000=Cash & Bank, 1100=Accounts Receivable
+
+-- FinancialTransactions
+Table: FinancialTransactions
+Columns: TransactionID (PK), TransactionNo, TransactionDate, AccountID (FK), TransactionType (Debit/Credit), Amount, Description, ReferenceNo, ReferenceType (SalesOrder/Payroll/Expense/Tax/COGS), CreatedAt
+
+-- Payroll
+Table: Payroll
+Columns: PayrollID (PK), EmployeeID (FK), PayMonth (1-12), PayYear, BasicSalary, Allowances, Deductions, GrossSalary, NetSalary, PaymentDate, Status (Pending/Processed/Paid)
+
+-- Expenses
+Table: Expenses
+Columns: ExpenseID (PK), ExpenseDate, Category (varchar), Description, Amount, DeptID (FK), ApprovedBy, Status (Pending/Approved/Rejected/Paid)
+
+-- AppUsers
+Table: AppUsers
+Columns: UserID (PK), Username, FullName, RoleID (FK Roles), EmployeeID (FK), Region, DeptID, IsActive
+
+-- AuditLog
+Table: AuditLog
+Columns: LogID (PK), UserID, Username, UserRole, Question, GeneratedSQL, ExecutionStatus, ErrorMessage, RowsReturned, LoggedAt
+
+=== VIEWS ===
+
+View: v_SalesOrders
+Joins: SalesOrders + Customers + Employees
+Extra columns: CustomerName, City, SalesPerson (EmpName)
+
+View: v_InventoryStatus
+Joins: Inventory + Products + Categories + Warehouses
+Extra columns: CategoryName, WarehouseName, AvailableQty, StockStatus (Low Stock / OK)
+
+View: v_FinancialSummary
+Joins: FinancialTransactions + Accounts
+Extra columns: AccountCode, AccountName, AccountType
+
+View: v_ManagementKPI
+Columns: Metric (TotalSales/TotalEmployees/LowStockItems/PendingLeaves), Value, Period
+
+=== BUSINESS RULES ===
+- Total sales for a period = SUM(NetAmount) from SalesOrders where Status != 'Cancelled'
+- Available stock = QuantityOnHand - QuantityReserved
+- Low stock = AvailableQty <= ReorderLevel
+- Net salary = GrossSalary - Deductions
+- Leave balance = EligibleDays - AvailedDays
+- Months: use MONTH(column) and YEAR(column) functions in MySQL
+- Current month: MONTH(CURDATE()), current year: YEAR(CURDATE())
+- Date format in MySQL: DATE_FORMAT(column, '%d-%m-%Y')
+
+=== KEY JOINS ===
+Employees -> Departments: Employees.DeptID = Departments.DeptID
+SalesOrders -> Customers: SalesOrders.CustomerID = Customers.CustomerID
+SalesOrders -> Employees: SalesOrders.SalesPersonID = Employees.EmployeeID
+SalesOrderItems -> SalesOrders: SalesOrderItems.OrderID = SalesOrders.OrderID
+SalesOrderItems -> Products: SalesOrderItems.ProductID = Products.ProductID
+Inventory -> Products: Inventory.ProductID = Products.ProductID
+Inventory -> Warehouses: Inventory.WarehouseID = Warehouses.WarehouseID
+FinancialTransactions -> Accounts: FinancialTransactions.AccountID = Accounts.AccountID
+Payroll -> Employees: Payroll.EmployeeID = Employees.EmployeeID
+LeaveTransactions -> Employees: LeaveTransactions.EmployeeID = Employees.EmployeeID
+LeaveTransactions -> LeaveTypes: LeaveTransactions.LeaveTypeID = LeaveTypes.LeaveTypeID

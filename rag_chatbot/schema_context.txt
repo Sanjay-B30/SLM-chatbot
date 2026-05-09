@@ -1,0 +1,161 @@
+Database: HRDB
+
+Table: PersonalMas
+Description: Stores employee master information.
+
+Columns:
+Persidno
+Employeeid
+EmpcodeinDevice
+Empname
+Cardtype
+Cardno
+Shiftid
+Weeklyoffid
+Joineddt
+Circleid
+Deptid
+Sectionid
+Sectionid2
+SectionDet
+workinunit
+Unitid
+Status
+Delreason
+DELREMARKS
+Deldate
+Entryby
+Entereddate
+Machinename
+PrintedNo
+Cardtext
+ShiftGroup
+BRANCH
+MOBILENO
+DTOB
+PREMPNO
+Hostel
+ESINO
+FUNCT
+QUALIFICATION
+GENDER
+ULB
+WHATSAPP
+
+
+Table: Shiftmas
+Description: Stores employee shift information.
+
+Columns:
+Shiftid
+Shiftname
+Shiftcode
+Shiftstart
+Shiftend
+Lunchstart
+Lunchend
+Unitid
+Status
+Oldshiftcode
+AttCode
+
+
+Table: LeaveDefMas
+Description: Defines types of leave.
+
+Columns:
+LeaveDefid
+Name
+Type
+Lookup
+Unitid
+Entryby
+Entereddate
+Machinename
+Status
+
+
+Table: ELIGLEAVEMAS
+Description: Stores leave eligibility for employees.
+
+Columns:
+EligLeaveid
+Employeeid
+Leavedefid
+Elgdys
+Availed
+Encashed
+Year
+Unitid
+Entryby
+Entereddate
+Machinename
+Status
+
+
+Table: Leavetran
+Description: Leave transaction records.
+
+Columns:
+Leaveid
+Applnno
+Aplndate
+Type
+Leavedefid
+Employeeid
+DateFrom
+Dateto
+Leavedays
+Halfid
+Status
+Closedate
+Unitid
+Entryby
+Enterdate
+Machine
+APPROVED
+APPDT
+APPBY
+DOC
+
+
+Table: deptmas
+Description: Department information.
+
+Columns:
+Deptid
+Name
+Lookup
+Olddeptcode
+Status
+deptOrder
+moncnt
+
+
+Table: sectionmas
+Description: Section information.
+
+Columns:
+Sectionid
+Sectionname
+Lookup
+Status
+EntryDate
+Entryby
+FUNCTI
+ULP
+
+
+Table: sectionmas2
+Description: Secondary section information.
+
+Columns:
+Sectionid
+Sectionname
+Lookup
+Status
+EntryDate
+Entryby
+UNIT_CODE
+secdept
+ULP
